@@ -15,8 +15,10 @@ const SearchBox = () => {
   useEffect(() => {
     const now = new Date();
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60000);
-    setStartTime(fiveMinutesAgo.toISOString().slice(0, -1));
-    setEndTime(now.toISOString().slice(0, -1));
+    setStartTime(fiveMinutesAgo.toISOString().slice(0, -1)+'Z');
+    setEndTime(now.toISOString().slice(0, -1)+'Z');
+    console.log('startTime:', fiveMinutesAgo.toISOString().slice(0, -1));
+    
   }, []);
 
   const validateTimeRange = () => {
@@ -44,7 +46,7 @@ const SearchBox = () => {
 
     try {
       // Fetch the UUID
-      console.log('fetching uuid');
+      console.log('fetching uuid', startTime, endTime, regex, text);
       
       const uuidResponse = await fetch(
         `http://localhost:3000/search?startTime=${startTime}&endTime=${endTime}&regex=${regex}&text=${text}`,
