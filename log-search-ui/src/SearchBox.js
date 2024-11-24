@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import LogDisplay from './LogDisplay';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const SearchBox = () => {
   const [logs, setLogs] = useState([]);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState(new Date(new Date().setSeconds(0, 0)));
+  const [endTime, setEndTime] = useState(new Date(new Date().setSeconds(0, 0)));
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,8 +17,8 @@ const SearchBox = () => {
   useEffect(() => {
     const now = new Date();
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60000);
-    setStartTime(fiveMinutesAgo.toISOString().slice(0, -1)+'Z');
-    setEndTime(now.toISOString().slice(0, -1)+'Z');
+    setStartTime(new Date(fiveMinutesAgo.setSeconds(0, 0)).toISOString());
+    setEndTime(new Date(now.setSeconds(0, 0)).toISOString());
     console.log('startTime:', fiveMinutesAgo.toISOString().slice(0, -1));
     
   }, []);
@@ -59,7 +61,7 @@ const SearchBox = () => {
           mode: 'cors',
         }
       );
-      console.log('uuidResponse:', uuidResponse.ok);
+      console.log('uuidResponse:', uuidResponse);
       
 
       if (!uuidResponse.ok) {
@@ -158,6 +160,14 @@ const SearchBox = () => {
     }
   }, [handleScroll]);
 
+  const handleStartTimeChange = (date) => {
+    setStartTime(new Date(date.setSeconds(0, 0)).toISOString());
+  };
+
+  const handleEndTimeChange = (date) => {
+    setEndTime(new Date(date.setSeconds(0, 0)).toISOString());
+  };
+
   return (
     <div style={{ padding: '1rem', maxWidth: '90%', margin: '0 auto' }}>
       <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Log Search</h2>
@@ -174,35 +184,21 @@ const SearchBox = () => {
         }}>
           <label style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ marginBottom: '0.5rem' }}>Start Time:</span>
-            <input
-              type="datetime-local"
-              value={startTime}
-              onChange={(e) => {
-                setError(null);
-                setStartTime(e.target.value);
-              }}
-              style={{ 
-                padding: '0.5rem',
-                border: '1px solid #ccc',
-                borderRadius: '4px'
-              }}
+            <DatePicker
+              selected={new Date(startTime)}
+              onChange={handleStartTimeChange}
+              showTimeSelect
+              dateFormat="Pp"
             />
           </label>
           
           <label style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ marginBottom: '0.5rem' }}>End Time:</span>
-            <input
-              type="datetime-local"
-              value={endTime}
-              onChange={(e) => {
-                setError(null);
-                setEndTime(e.target.value);
-              }}
-              style={{ 
-                padding: '0.5rem',
-                border: '1px solid #ccc',
-                borderRadius: '4px'
-              }}
+            <DatePicker
+              selected={new Date(endTime)}
+              onChange={handleEndTimeChange}
+              showTimeSelect
+              dateFormat="Pp"
             />
           </label>
           
@@ -293,9 +289,9 @@ const SearchBox = () => {
               color: '#166534'
             }}>
               Showing logs from{' '}
-              {startTime ? new Date(startTime).toLocaleString() : 'the beginning'}{' '}
+              {startTime ? new Date(startTime).toISOString : 'the beginning'}{' '}
               to{' '}
-              {endTime ? new Date(endTime).toLocaleString() : 'now'}
+              {endTime ? new Date(endTime).toISOString : 'now'}
             </div>
             
             <div id="log-display" style={{ overflowY: 'auto', maxHeight: '400px', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1rem', backgroundColor: '#f9fafb' }}>
