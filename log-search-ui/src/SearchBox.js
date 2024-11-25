@@ -3,6 +3,20 @@ import LogDisplay from './LogDisplay';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+  <input
+    type="text"
+    value={value}
+    onClick={onClick}
+    ref={ref}
+    style={{
+      padding: '0.5rem',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+    }}
+  />
+));
+
 const SearchBox = () => {
   const [logs, setLogs] = useState([]);
   const [startTime, setStartTime] = useState(new Date(new Date().setSeconds(0, 0)));
@@ -169,7 +183,7 @@ const SearchBox = () => {
   };
 
   return (
-    <div style={{ padding: '1rem', maxWidth: '90%', margin: '0 auto' }}>
+    <div style={{ padding: '1rem', maxWidth: '60%', margin: '0 auto' }}>
       <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Log Search</h2>
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -183,12 +197,63 @@ const SearchBox = () => {
           border: '1px solid #e5e7eb'
         }}>
           <label style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ marginBottom: '0.5rem' }}>Time Range:</span>
+            <select
+              onChange={(e) => {
+                const now = new Date();
+                let newStartTime;
+                switch (e.target.value) {
+                  case '5m':
+                    newStartTime = new Date(now.getTime() - 5 * 60000);
+                    break;
+                  case '30m':
+                    newStartTime = new Date(now.getTime() - 30 * 60000);
+                    break;
+                  case '1h':
+                    newStartTime = new Date(now.getTime() - 60 * 60000);
+                    break;
+                  case '12h':
+                    newStartTime = new Date(now.getTime() - 12 * 60 * 60000);
+                    break;
+                  case '1d':
+                    newStartTime = new Date(now.getTime() - 24 * 60 * 60000);
+                    break;
+                  case '3d':
+                    newStartTime = new Date(now.getTime() - 3 * 24 * 60 * 60000);
+                    break;
+                  case '7d':
+                    newStartTime = new Date(now.getTime() - 7 * 24 * 60 * 60000);
+                    break;
+                  default:
+                    newStartTime = now;
+                }
+                setStartTime(new Date(newStartTime.setSeconds(0, 0)).toISOString());
+                setEndTime(new Date(now.setSeconds(0, 0)).toISOString());
+              }}
+              style={{
+                padding: '0.5rem',
+                border: '1px solid #ccc',
+                borderRadius: '4px'
+              }}
+            >
+              <option value="5m">Last 5 minutes</option>
+              <option value="30m">Last 30 minutes</option>
+              <option value="1h">Last 1 hour</option>
+              <option value="12h">Last 12 hours</option>
+              <option value="1d">Last 1 day</option>
+              <option value="3d">Last 3 days</option>
+              <option value="7d">Last 7 days</option>
+            </select>
+          </label>
+          
+          <label style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ marginBottom: '0.5rem' }}>Start Time:</span>
             <DatePicker
               selected={new Date(startTime)}
               onChange={handleStartTimeChange}
               showTimeSelect
               dateFormat="Pp"
+              customInput={<CustomInput />}
             />
           </label>
           
@@ -199,6 +264,7 @@ const SearchBox = () => {
               onChange={handleEndTimeChange}
               showTimeSelect
               dateFormat="Pp"
+              customInput={<CustomInput />}
             />
           </label>
           

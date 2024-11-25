@@ -7,7 +7,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Log Monitor</h1>
+      <h1 style={{ marginLeft: '10%' }}>Log Monitor</h1>
       <SearchBox />
     </div>
   );
