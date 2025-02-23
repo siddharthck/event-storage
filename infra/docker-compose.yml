@@ -1,48 +1,48 @@
 services:
 
 
-  # lre:
-  #   container_name : lre
-  #   image: ess/log-monitor-lambda:latest
-  #   ports:
-  #     - "4500:8080"
-  #   depends_on:
-  #     - minio
-  #   environment:
-  #     - AWS_ACCESS_KEY_ID=abcd
-  #     - AWS_SECRET_ACCESS_KEY=abcd
-  #     - AWS_SESSION_TOKEN=abcd
-  #     - AWS_REGION=us-east-1
-  # log-push:
-  #   depends_on:
-  #     - kafka
-  #   image : ess/log-push:latest
-  #   container_name: log-push
-  #   ports:
-  #     - "9005:9000"
-  #   environment:
-  #     KAFKA_HOST: kafka
-  #     KAFKA_PORT: 9092
-  #     KAFKA_TOPIC: kafka
+  lre:
+    container_name : lre
+    image: ess/log-monitor-lambda:latest
+    ports:
+      - "4500:8080"
+    depends_on:
+      - minio
+    environment:
+      - AWS_ACCESS_KEY_ID=abcd
+      - AWS_SECRET_ACCESS_KEY=abcd
+      - AWS_SESSION_TOKEN=abcd
+      - AWS_REGION=us-east-1
+  log-push:
+    depends_on:
+      - kafka
+    image : ess/log-push:latest
+    container_name: log-push
+    ports:
+      - "9005:9000"
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      KAFKA_TOPIC: kafka
 
-  # log-search:
-  #   image: ess/log-search:latest
-  #   container_name: logsearch
-  #   depends_on:
-  #     - redis
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
+  log-search:
+    image: ess/log-search:latest
+    container_name: logsearch
+    depends_on:
+      - redis
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
   
-  # log-persist:
-  #   image: ess/log-persist:latest
-  #   container_name: logpersist
-  #   depends_on:
-  #     - log-push
-  #   ports:
-  #     - "8082:8082"
+  log-persist:
+    image: ess/log-persist:latest
+    container_name: logpersist
+    depends_on:
+      - log-push
+    ports:
+      - "8082:8082"
 
 
 
