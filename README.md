@@ -102,3 +102,14 @@ few ponints to note about the LRE
 - most of the time in lambdas are spent over makeing GET calls to S3 objects
 - improve storage methods : switch to Coulumnar based storage solutions for faster processing
 
+
+
+# Improvements 
+## log-persist inconsistent distribution across replicas due to kafka partition (hash)
+
+same type of logs will lead to put stress on just one replica. 
+
+### solution 
+Add virtual nodes ?
+
+
